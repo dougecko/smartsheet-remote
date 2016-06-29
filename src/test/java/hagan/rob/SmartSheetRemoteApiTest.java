@@ -7,7 +7,7 @@ import junit.framework.TestSuite;
 /**
  * Unit test for simple App.
  */
-public class SmartSheetRemoteTest
+public class SmartSheetRemoteApiTest
         extends TestCase
 {
     /**
@@ -15,7 +15,7 @@ public class SmartSheetRemoteTest
      *
      * @param testName name of the test case
      */
-    public SmartSheetRemoteTest( String testName )
+    public SmartSheetRemoteApiTest( String testName )
     {
         super( testName );
     }
@@ -25,7 +25,7 @@ public class SmartSheetRemoteTest
      */
     public static Test suite()
     {
-        return new TestSuite( SmartSheetRemoteTest.class );
+        return new TestSuite( SmartSheetRemoteApiTest.class );
     }
 
     /**

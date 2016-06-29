@@ -9,24 +9,9 @@
     <url>http://maven.apache.org</url>
     <dependencies>
         <dependency>
-            <groupId>org.glassfish</groupId>
-            <artifactId>javax.json</artifactId>
-            <version>1.0.4</version>
-        </dependency>
-        <dependency>
-            <groupId>javax.json</groupId>
-            <artifactId>javax.json-api</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>javax.ws.rs</groupId>
-            <artifactId>javax.ws.rs-api</artifactId>
-            <version>2.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.jersey.core</groupId>
-            <artifactId>jersey-client</artifactId>
-            <version>2.23.1</version>
+            <groupId>com.smartsheet</groupId>
+            <artifactId>smartsheet-sdk-java</artifactId>
+            <version>2.0.4</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
