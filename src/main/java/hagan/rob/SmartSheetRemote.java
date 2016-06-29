@@ -19,8 +19,14 @@ public class SmartSheetRemote
     public static void main( String[] args )
     {
         final MultivaluedMap<String, Object> headers = new MultivaluedHashMap<String, Object>();
-        headers.putSingle( "Authorisation: Bearer", "5nngm8pu93qg22e4suna4rsve2" );
-        getJsonObject( "https://api.smartsheet.com/2.0/workspaces", headers );
+        headers.putSingle( "Authorisation: Bearer", args[0] );
+        final JsonObject jsonObject = getJsonObject( "https://api.smartsheet.com/2.0/workspaces", headers );
+
+        final int id = jsonObject.getInt( "id" );
+        System.out.println( "id = " + id );
+
+        final String name = jsonObject.getString( "name" );
+        System.out.println( "name = " + name );
     }
 
     private static Client newClient()
