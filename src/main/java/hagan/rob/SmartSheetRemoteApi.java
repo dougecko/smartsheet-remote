@@ -6,15 +6,28 @@ import com.smartsheet.api.SmartsheetException;
 import com.smartsheet.api.models.*;
 import com.smartsheet.api.oauth.Token;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.HashSet;
 import java.util.List;
 
 public class SmartSheetRemoteApi
 {
 
     private static final String WORKSPACE_NAME = "[210] FC Project Plans";
+    private static final String COLUMN_TITLE = "Admin comment 1:";
+    private static final String DATE;
+
+    static
+    {
+        final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern( "dd-MMM-uuuu hh:mm a" );
+        DATE = dateTimeFormatter.format( LocalDateTime.now() );
+    }
 
     public static void main( String[] args ) throws SmartsheetException
     {
+        System.out.println( "DATE = " + DATE );
+
         // Set the Access Token
         final Token token = new Token();
         token.setAccessToken( args[0] );
@@ -92,16 +105,38 @@ public class SmartSheetRemoteApi
         {
             System.out.println( "      sheet = " + sheetSummary.getName() );
 
+            final HashSet<Integer> rowNumbers = new HashSet<Integer>();
+            rowNumbers.add( 1 );
             final Sheet sheet = smartsheet.sheetResources().getSheet( sheetSummary.getId(),
                                                                       null,
                                                                       null,
                                                                       null,
-                                                                      null,
+                                                                      rowNumbers,
                                                                       null,
                                                                       null,
                                                                       null );
+            final List<Column> columns = sheet.getColumns();
+            for ( final Column column : columns )
+            {
+                final String title = column.getTitle();
+                if ( COLUMN_TITLE.equals( title ) )
+                {
+                    final Long adminCommentColumnId = column.getId();
 
-            System.out.println( "*** sheet name = " + sheet.getName() );
+                    final Row row = sheet.getRowByRowNumber( 1 );
+                    final List<Cell> cells = row.getCells();
+                    for ( final Cell cell : cells )
+                    {
+                        if ( cell.getColumnId().equals( adminCommentColumnId ) )
+                        {
+                            System.out.println( "*** found admin comment column = '" + cell.getValue() + "'" );
+
+                            // To update cells, update the row containing the cell.
+//                            cell.setValue( "Hide all columns from here on ... Automatic update: " + DATE );
+                        }
+                    }
+                }
+            }
         }
     }
 }
