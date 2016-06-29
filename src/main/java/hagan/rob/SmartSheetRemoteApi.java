@@ -13,7 +13,6 @@ import java.util.List;
 
 public class SmartSheetRemoteApi
 {
-
     private static final String WORKSPACE_NAME = "[210] FC Project Plans";
     private static final String COLUMN_TITLE = "Admin comment 1:";
     private static final String DATE;
@@ -24,55 +23,62 @@ public class SmartSheetRemoteApi
         DATE = dateTimeFormatter.format( LocalDateTime.now() );
     }
 
-    public static void main( String[] args ) throws SmartsheetException
+    public static void main( String[] args )
     {
         System.out.println( "DATE = " + DATE );
 
-        // Set the Access Token
-        final Token token = new Token();
-        token.setAccessToken( args[0] );
-
-        // Use the Smartsheet Builder to create an instance of Smartsheet
-        final Smartsheet smartsheet = new SmartsheetBuilder().setAccessToken( token.getAccessToken() ).build();
-
-        final PaginationParameters.PaginationParametersBuilder paginationParametersBuilder =
-                new PaginationParameters.PaginationParametersBuilder();
-        paginationParametersBuilder.setIncludeAll( true );
-        final PaginationParameters paginationParameters = paginationParametersBuilder.build();
-        final PagedResult<Workspace> workspacePagedResult =
-                smartsheet.workspaceResources().listWorkspaces( paginationParameters );
-        final List<Workspace> workspaces = workspacePagedResult.getData();
-
-        for ( final Workspace workspaceSummary : workspaces )
+        try
         {
-            final String workspaceName = workspaceSummary.getName();
-            if ( !(WORKSPACE_NAME.equals( workspaceName )) )
+            // Set the Access Token
+            final Token token = new Token();
+            token.setAccessToken( args[0] );
+
+            // Use the Smartsheet Builder to create an instance of Smartsheet
+            final Smartsheet smartsheet = new SmartsheetBuilder().setAccessToken( token.getAccessToken() ).build();
+
+            final PaginationParameters.PaginationParametersBuilder paginationParametersBuilder =
+                    new PaginationParameters.PaginationParametersBuilder();
+            paginationParametersBuilder.setIncludeAll( true );
+            final PaginationParameters paginationParameters = paginationParametersBuilder.build();
+            final PagedResult<Workspace> workspacePagedResult =
+                    smartsheet.workspaceResources().listWorkspaces( paginationParameters );
+            final List<Workspace> workspaces = workspacePagedResult.getData();
+
+            for ( final Workspace workspaceSummary : workspaces )
             {
-                continue;
+                final String workspaceName = workspaceSummary.getName();
+                if ( !(WORKSPACE_NAME.equals( workspaceName )) )
+                {
+                    continue;
+                }
+
+                System.out.println( "workspace = " + workspaceName );
+
+                final Long workspaceId = workspaceSummary.getId();
+
+                final Workspace workspace = smartsheet.workspaceResources().getWorkspace( workspaceId, null, null );
+                final List<Folder> folders = workspace.getFolders();
+                if ( null == folders )
+                {
+                    continue;
+                }
+
+                for ( final Folder folderSummary : folders )
+                {
+                    System.out.println( "   folder = " + folderSummary.getName() );
+
+                    final Long folderId = folderSummary.getId();
+
+                    final Folder folder = smartsheet.folderResources().getFolder( folderId, null );
+
+                    doFolderSubFolders( smartsheet, folder );
+                    doFolderSheets( smartsheet, folder );
+                }
             }
-
-            System.out.println( "workspace = " + workspaceName );
-
-            final Long workspaceId = workspaceSummary.getId();
-
-            final Workspace workspace = smartsheet.workspaceResources().getWorkspace( workspaceId, null, null );
-            final List<Folder> folders = workspace.getFolders();
-            if ( null == folders )
-            {
-                continue;
-            }
-
-            for ( final Folder folderSummary : folders )
-            {
-                System.out.println( "   folder = " + folderSummary.getName() );
-
-                final Long folderId = folderSummary.getId();
-
-                final Folder folder = smartsheet.folderResources().getFolder( folderId, null );
-
-                doFolderSubFolders( smartsheet, folder );
-                doFolderSheets( smartsheet, folder );
-            }
+        }
+        catch ( final SmartsheetException e )
+        {
+            throw new RuntimeException( e );
         }
     }
 
