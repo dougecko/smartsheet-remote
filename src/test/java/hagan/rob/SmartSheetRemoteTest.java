@@ -15,9 +15,9 @@ public class SmartSheetRemoteTest
      *
      * @param testName name of the test case
      */
-    public SmartSheetRemoteTest(String testName)
+    public SmartSheetRemoteTest( String testName )
     {
-        super(testName);
+        super( testName );
     }
 
     /**
@@ -25,7 +25,7 @@ public class SmartSheetRemoteTest
      */
     public static Test suite()
     {
-        return new TestSuite(SmartSheetRemoteTest.class);
+        return new TestSuite( SmartSheetRemoteTest.class );
     }
 
     /**
@@ -33,6 +33,6 @@ public class SmartSheetRemoteTest
      */
     public void testApp()
     {
-        assertTrue(true);
+        assertTrue( true );
     }
 }
